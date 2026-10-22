@@ -72,3 +72,15 @@ CREATE TABLE IF NOT EXISTS attempt_answers (
     saved_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE (attempt_id, question_id)
 );
+
+-- feedback given by students after completing a quiz (#16)
+CREATE TABLE IF NOT EXISTS feedback (
+    id SERIAL PRIMARY KEY,
+    quiz_id INT NOT NULL REFERENCES quizzes(id) ON DELETE CASCADE,
+    student_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (quiz_id, student_id)
+);
+
