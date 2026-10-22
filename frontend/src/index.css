@@ -1,0 +1,274 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f2f4f8;
+  color: #222;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+/* navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #2c3e8f;
+  color: white;
+  padding: 12px 20px;
+}
+.logo {
+  font-weight: bold;
+  font-size: 18px;
+}
+.nav-links a {
+  color: white;
+  margin-right: 15px;
+  text-decoration: none;
+}
+.nav-links a:hover {
+  text-decoration: underline;
+}
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.role-tag {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+  color: white;
+}
+.role-admin { background: #c0392b; }
+.role-teacher { background: #d68910; }
+.role-student { background: #27ae60; }
+
+/* common */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+.center {
+  text-align: center;
+}
+.muted {
+  color: #777;
+  font-size: 14px;
+}
+.error {
+  background: #fdecea;
+  color: #b3261e;
+  padding: 10px;
+  border-radius: 5px;
+}
+.success {
+  background: #e7f6ec;
+  color: #1e7e34;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.btn {
+  display: inline-block;
+  background: #2c3e8f;
+  color: white;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 4px;
+}
+.btn:hover {
+  background: #1f2d6b;
+}
+.btn:disabled {
+  background: #9aa3c7;
+  cursor: not-allowed;
+}
+.btn-light {
+  background: #e4e7f1;
+  color: #2c3e8f;
+}
+.btn-light:hover {
+  background: #d2d7e8;
+}
+.btn-small {
+  padding: 5px 12px;
+  font-size: 13px;
+}
+
+/* forms */
+.auth-box {
+  max-width: 380px;
+  margin: 40px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.auth-box form label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.auth-box form .btn {
+  width: 100%;
+  margin: 18px 0 0;
+}
+input[type='text'],
+input[type='email'],
+input[type='password'],
+.auth-box input {
+  width: 100%;
+  padding: 9px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+select {
+  padding: 5px;
+  border-radius: 4px;
+}
+.demo-box {
+  margin-top: 15px;
+  background: #f5f6fa;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.demo-box p {
+  margin: 4px 0;
+}
+
+/* tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+th {
+  background: #f5f6fa;
+}
+
+.status {
+  font-size: 12px;
+  padding: 3px 7px;
+  border-radius: 4px;
+}
+.status-open { background: #e7f6ec; color: #1e7e34; }
+.status-upcoming { background: #fff4e0; color: #a35f00; }
+.status-closed { background: #eee; color: #666; }
+.pass { color: #1e7e34; font-weight: bold; }
+.fail { color: #b3261e; font-weight: bold; }
+
+/* teacher dashboard */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.feature {
+  color: #555;
+}
+.feature span {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
+
+/* quiz attempt */
+.quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  background: #f2f4f8;
+  padding: 8px 0;
+}
+.timer {
+  background: #2c3e8f;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+.timer-low {
+  background: #c0392b;
+}
+.question-text {
+  margin-top: 0;
+}
+.marks {
+  color: #888;
+  font-size: 13px;
+  margin-left: 6px;
+}
+.option {
+  display: block;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.option input {
+  margin-right: 8px;
+}
+.submit-area {
+  text-align: center;
+  margin: 20px 0;
+}
+.confirm-box {
+  background: #fff8e5;
+  border: 1px solid #f0d58c;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+/* result */
+.result-card {
+  max-width: 500px;
+  margin: 30px auto;
+}
+.result-badge {
+  display: inline-block;
+  font-size: 26px;
+  font-weight: bold;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+.pass-bg { background: #27ae60; }
+.fail-bg { background: #c0392b; }
+.big-score {
+  font-size: 30px;
+  font-weight: bold;
+  margin: 10px 0;
+}
