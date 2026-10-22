@@ -10,6 +10,7 @@ import TeacherDashboard from './pages/TeacherDashboard.jsx';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import AttemptQuiz from './pages/AttemptQuiz.jsx';
 import Result from './pages/Result.jsx';
+import AttemptHistory from './pages/AttemptHistory.jsx';
 
 // sends the user to their own dashboard based on role
 function HomeRedirect() {
@@ -40,6 +41,9 @@ export default function App() {
           } />
           <Route path="/student" element={
             <ProtectedRoute roles={['STUDENT']}><StudentDashboard /></ProtectedRoute>
+          } />
+          <Route path="/history" element={
+            <ProtectedRoute roles={['STUDENT', 'TEACHER', 'ADMIN']}><AttemptHistory /></ProtectedRoute>
           } />
           <Route path="/attempt/:attemptId" element={
             <ProtectedRoute roles={['STUDENT']}><AttemptQuiz /></ProtectedRoute>

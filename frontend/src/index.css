@@ -272,3 +272,75 @@ th {
   font-weight: bold;
   margin: 10px 0;
 }
+
+/* Status pills */
+.status {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.status-open {
+  background: #e7f6ec;
+  color: #1e7e34;
+}
+.status-upcoming {
+  background: #fff8e5;
+  color: #b78103;
+}
+.status-closed {
+  background: #f0f0f0;
+  color: #666;
+}
+.status-pass {
+  background: #e7f6ec;
+  color: #1e7e34;
+}
+.status-fail {
+  background: #fdecea;
+  color: #b3261e;
+}
+.status-inprogress {
+  background: #e8f4fd;
+  color: #1976d2;
+}
+
+/* Star rating styles */
+.star-rating {
+  display: inline-flex;
+  gap: 6px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.star {
+  color: #ccc;
+  transition: color 0.15s ease-in-out;
+}
+.star.filled {
+  color: #f39c12;
+}
+
+/* Review / Explanation styles */
+.question-review-card {
+  border-left: 4px solid #ccc;
+  padding-left: 14px;
+  margin-bottom: 16px;
+}
+.question-review-card.correct {
+  border-left-color: #27ae60;
+}
+.question-review-card.incorrect {
+  border-left-color: #c0392b;
+}
+.explanation-box {
+  background: #f8f9fa;
+  border-left: 3px solid #2c3e8f;
+  padding: 8px 12px;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+

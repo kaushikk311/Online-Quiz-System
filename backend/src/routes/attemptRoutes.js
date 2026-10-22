@@ -111,26 +111,51 @@ router.post('/start/:quizId', authorize(ROLES.STUDENT), async (req, res) => {
   }
 });
 
-// attempt history - student can see only their own, teacher/admin can see any student
-// (#12 will make the full history page, this is the basic list)
+// attempt history - student can see only their own, teacher/admin can see any student (#12)
 router.get('/history/:studentId', onlyOwnData, async (req, res) => {
   const studentId = toId(req.params.studentId);
   if (!studentId) {
     return res.status(400).json({ message: 'Invalid student id' });
   }
 
+  const { status, quizId } = req.query || {};
+
   try {
-    const result = await pool.query(
-      `SELECT a.id, a.quiz_id, q.title, a.started_at, a.submitted_at, a.status,
-              a.submit_type, a.score, a.total_marks, a.percentage, a.passed
-       FROM attempts a JOIN quizzes q ON q.id = a.quiz_id
-       WHERE a.student_id = $1
-       ORDER BY a.started_at DESC`,
-      [studentId]
-    );
+    let query = `
+      SELECT a.id, a.quiz_id, q.title, q.subject, q.pass_percentage, q.time_limit_minutes,
+             a.started_at, a.submitted_at, a.status, a.submit_type, a.score, a.total_marks,
+             a.percentage, a.passed,
+             CASE
+               WHEN a.submitted_at IS NOT NULL THEN EXTRACT(EPOCH FROM (a.submitted_at - a.started_at))::INT
+               ELSE NULL
+             END AS duration_seconds
+      FROM attempts a
+      JOIN quizzes q ON q.id = a.quiz_id
+      WHERE a.student_id = $1
+    `;
+    const params = [studentId];
+
+    if (status && status !== 'ALL') {
+      params.push(status);
+      query += ` AND a.status = $${params.length}`;
+    }
+
+    if (quizId) {
+      const qId = toId(quizId);
+      if (qId) {
+        params.push(qId);
+        query += ` AND a.quiz_id = $${params.length}`;
+      }
+    }
+
+    query += ' ORDER BY a.started_at DESC';
+
+    const result = await pool.query(query, params);
     const rows = result.rows.map((r) => ({
       ...r,
-      percentage: r.percentage === null ? null : Number(r.percentage)
+      pass_percentage: Number(r.pass_percentage),
+      percentage: r.percentage === null ? null : Number(r.percentage),
+      duration_seconds: r.duration_seconds === null ? null : Number(r.duration_seconds)
     }));
     res.json(rows);
   } catch (err) {

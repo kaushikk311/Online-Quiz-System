@@ -97,7 +97,10 @@ export default function StudentDashboard() {
       </div>
 
       <div className="card">
-        <h3>My Attempts</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <h3 style={{ margin: 0 }}>My Attempts</h3>
+          <Link to="/history" style={{ fontSize: '13px' }}>View Full History →</Link>
+        </div>
         {attempts.length === 0 ? (
           <p className="muted">You have not attempted any quiz yet.</p>
         ) : (

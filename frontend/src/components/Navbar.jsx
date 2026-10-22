@@ -23,6 +23,7 @@ export default function Navbar() {
         {user.role === 'ADMIN' && <Link to="/admin">Manage Users</Link>}
         {user.role === 'TEACHER' && <Link to="/teacher">Quizzes</Link>}
         {user.role === 'STUDENT' && <Link to="/student">My Quizzes</Link>}
+        <Link to="/history">Attempt History</Link>
       </div>
 
       <div className="nav-user">
