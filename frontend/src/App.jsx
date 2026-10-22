@@ -11,6 +11,7 @@ import StudentDashboard from './pages/StudentDashboard.jsx';
 import AttemptQuiz from './pages/AttemptQuiz.jsx';
 import Result from './pages/Result.jsx';
 import AttemptHistory from './pages/AttemptHistory.jsx';
+import ReviewAttempt from './pages/ReviewAttempt.jsx';
 
 // sends the user to their own dashboard based on role
 function HomeRedirect() {
@@ -50,6 +51,9 @@ export default function App() {
           } />
           <Route path="/result/:attemptId" element={
             <ProtectedRoute roles={['STUDENT', 'TEACHER', 'ADMIN']}><Result /></ProtectedRoute>
+          } />
+          <Route path="/review/:attemptId" element={
+            <ProtectedRoute roles={['STUDENT', 'TEACHER', 'ADMIN']}><ReviewAttempt /></ProtectedRoute>
           } />
 
           <Route path="*" element={<p>Page not found</p>} />

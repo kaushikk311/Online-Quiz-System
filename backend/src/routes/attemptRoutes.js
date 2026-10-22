@@ -339,4 +339,77 @@ router.get('/:attemptId/result', async (req, res) => {
   }
 });
 
+// review answers for a submitted attempt (#13)
+// allows students to see their answers vs correct answers and explanations
+router.get('/:attemptId/review', async (req, res) => {
+  const attemptId = toId(req.params.attemptId);
+  if (!attemptId) {
+    return res.status(400).json({ message: 'Invalid attempt id' });
+  }
+
+  try {
+    const attempt = await findAttempt(attemptId);
+    if (!attempt) {
+      return res.status(404).json({ message: 'Attempt not found' });
+    }
+    if (req.user.role === ROLES.STUDENT && attempt.student_id !== req.user.id) {
+      return res.status(403).json({ message: 'You can only review your own attempt' });
+    }
+    if (attempt.status !== 'SUBMITTED') {
+      return res.status(400).json({ message: 'Answer review is only available after submitting the quiz' });
+    }
+
+    const questionsRes = await pool.query(
+      'SELECT id, question_text, question_type, options, correct_answer, explanation, marks FROM questions WHERE quiz_id = $1 ORDER BY id',
+      [attempt.quiz_id]
+    );
+
+    const answersRes = await pool.query(
+      'SELECT question_id, given_answer, is_correct FROM attempt_answers WHERE attempt_id = $1',
+      [attemptId]
+    );
+
+    const answerMap = {};
+    answersRes.rows.forEach((row) => {
+      answerMap[row.question_id] = {
+        givenAnswer: row.given_answer,
+        isCorrect: row.is_correct
+      };
+    });
+
+    const reviewedQuestions = questionsRes.rows.map((q) => {
+      const ans = answerMap[q.id] || { givenAnswer: null, isCorrect: false };
+      return {
+        id: q.id,
+        questionText: q.question_text,
+        questionType: q.question_type,
+        options: q.options,
+        marks: q.marks,
+        earnedMarks: ans.isCorrect ? q.marks : 0,
+        givenAnswer: ans.givenAnswer,
+        correctAnswer: q.correct_answer,
+        isCorrect: ans.isCorrect,
+        explanation: q.explanation
+      };
+    });
+
+    res.json({
+      attemptId: attempt.id,
+      quizId: attempt.quiz_id,
+      quizTitle: attempt.title,
+      score: attempt.score,
+      totalMarks: attempt.total_marks,
+      percentage: Number(attempt.percentage),
+      passPercentage: Number(attempt.pass_percentage),
+      passed: attempt.passed,
+      submittedAt: attempt.submitted_at,
+      submitType: attempt.submit_type,
+      questions: reviewedQuestions
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
