@@ -28,6 +28,15 @@ async function findAttempt(attemptId) {
   return result.rows[0];
 }
 
+// the attempt that is still running for this student and quiz (there can be only one)
+async function findRunningAttempt(quizId, studentId) {
+  const result = await pool.query(
+    "SELECT * FROM attempts WHERE quiz_id = $1 AND student_id = $2 AND status = 'IN_PROGRESS'",
+    [quizId, studentId]
+  );
+  return result.rows[0];
+}
+
 function formatResult(attempt) {
   return {
     attemptId: attempt.id,
@@ -68,12 +77,8 @@ router.post('/start/:quizId', authorize(ROLES.STUDENT), async (req, res) => {
 
     // if an attempt is already running give that one back
     // (student refreshed the page or the internet went off and came back)
-    const running = await pool.query(
-      "SELECT * FROM attempts WHERE quiz_id = $1 AND student_id = $2 AND status = 'IN_PROGRESS'",
-      [quizId, req.user.id]
-    );
-    if (running.rows.length > 0) {
-      const attempt = running.rows[0];
+    const attempt = await findRunningAttempt(quizId, req.user.id);
+    if (attempt) {
       const deadline = getDeadline(attempt.started_at, quiz.time_limit_minutes, quiz.end_time);
       if (Date.now() < deadline.getTime()) {
         return res.json({ attemptId: attempt.id, resumed: true });
@@ -87,6 +92,12 @@ router.post('/start/:quizId', authorize(ROLES.STUDENT), async (req, res) => {
       [quizId, req.user.id]
     );
     if (Number(countRes.rows[0].count) >= quiz.max_attempts) {
+      // if start was clicked twice at the same time, the other request may have made
+      // the attempt just now. give that one back instead of saying no attempts are left (#18)
+      const justStarted = await findRunningAttempt(quizId, req.user.id);
+      if (justStarted) {
+        return res.json({ attemptId: justStarted.id, resumed: true });
+      }
       return res.status(403).json({ message: 'You have used all your attempts for this quiz' });
     }
 
@@ -98,12 +109,9 @@ router.post('/start/:quizId', authorize(ROLES.STUDENT), async (req, res) => {
   } catch (err) {
     // 23505 = unique violation, happens when start is clicked twice at the same time
     if (err.code === '23505') {
-      const again = await pool.query(
-        "SELECT id FROM attempts WHERE quiz_id = $1 AND student_id = $2 AND status = 'IN_PROGRESS'",
-        [quizId, req.user.id]
-      );
-      if (again.rows.length > 0) {
-        return res.json({ attemptId: again.rows[0].id, resumed: true });
+      const again = await findRunningAttempt(quizId, req.user.id);
+      if (again) {
+        return res.json({ attemptId: again.id, resumed: true });
       }
     }
     console.log(err);

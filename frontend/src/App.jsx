@@ -7,6 +7,7 @@ import Register from './pages/Register.jsx';
 import Unauthorized from './pages/Unauthorized.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import TeacherDashboard from './pages/TeacherDashboard.jsx';
+import CreateQuiz from './pages/CreateQuiz.jsx';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import AttemptQuiz from './pages/AttemptQuiz.jsx';
 import Result from './pages/Result.jsx';
@@ -39,6 +40,9 @@ export default function App() {
           } />
           <Route path="/teacher" element={
             <ProtectedRoute roles={['TEACHER']}><TeacherDashboard /></ProtectedRoute>
+          } />
+          <Route path="/teacher/create" element={
+            <ProtectedRoute roles={['TEACHER']}><CreateQuiz /></ProtectedRoute>
           } />
           <Route path="/student" element={
             <ProtectedRoute roles={['STUDENT']}><StudentDashboard /></ProtectedRoute>

@@ -4,7 +4,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const pool = require('../src/db');
 
 const demoUsers = [

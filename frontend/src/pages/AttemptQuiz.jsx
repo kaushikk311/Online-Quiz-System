@@ -78,10 +78,20 @@ export default function AttemptQuiz() {
   }, [quiz]);
 
   // autosave every 10 seconds if something changed (#19)
+  // the first save waits a random time (0-10 sec) so a class that started together
+  // does not send all the autosaves in the same second (#18)
   useEffect(() => {
     if (!quiz) return;
-    const saver = setInterval(saveToServer, 10000);
-    return () => clearInterval(saver);
+    let saver = null;
+    const firstSave = setTimeout(() => {
+      saveToServer();
+      saver = setInterval(saveToServer, 10000);
+    }, Math.random() * 10000);
+
+    return () => {
+      clearTimeout(firstSave);
+      clearInterval(saver);
+    };
   }, [quiz]);
 
   async function saveToServer() {
@@ -93,11 +103,12 @@ export default function AttemptQuiz() {
       await api('/attempts/' + attemptId + '/answers', 'PUT', { answers: toList(answersRef.current) });
       setSaveStatus('All answers saved');
     } catch (err) {
-      if (err.status) {
+      if (err.status && err.status < 500) {
         setSaveStatus(err.message);
       } else {
-        unsavedRef.current = true; // try again in the next round
-        setSaveStatus('Could not save (no internet?) - will try again');
+        // no internet, or server too busy (5xx) -> try again in the next round
+        unsavedRef.current = true;
+        setSaveStatus('Could not save right now - will try again');
       }
     }
   }
@@ -135,14 +146,16 @@ export default function AttemptQuiz() {
         navigate('/result/' + attemptId, { replace: true });
         return;
       } catch (err) {
-        if (err.status) {
+        if (err.status && err.status < 500) {
           // server replied with an error, no point retrying
           setError(err.message);
           submittedRef.current = false;
           setSubmitting(false);
           return;
         }
-        await wait(2000);
+        // no internet or server busy. wait 2-3 sec, a little random so all the
+        // students who failed together do not retry at the exact same moment (#18)
+        await wait(2000 + Math.random() * 1000);
       }
     }
 

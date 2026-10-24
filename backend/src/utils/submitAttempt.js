@@ -3,16 +3,24 @@ const { evaluateAttempt } = require('./evaluate');
 const { getDeadline, isPastGrace, validateAnswers } = require('./attemptHelper');
 
 // saves or updates answers of an attempt (used by autosave and by submit)
+// all answers are saved in one query instead of one query per question, so the
+// attempt row stays locked for less time when many students save together (#18)
 async function saveAnswers(client, attemptId, answers) {
-  for (const item of answers) {
-    await client.query(
-      `INSERT INTO attempt_answers (attempt_id, question_id, given_answer)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (attempt_id, question_id)
-       DO UPDATE SET given_answer = EXCLUDED.given_answer, saved_at = NOW()`,
-      [attemptId, item.questionId, item.answer || null]
-    );
+  if (answers.length === 0) {
+    return;
   }
+
+  const questionIds = answers.map((item) => item.questionId);
+  const givenAnswers = answers.map((item) => item.answer || null);
+
+  await client.query(
+    `INSERT INTO attempt_answers (attempt_id, question_id, given_answer)
+     SELECT $1, x.question_id, x.given_answer
+     FROM unnest($2::int[], $3::text[]) AS x(question_id, given_answer)
+     ON CONFLICT (attempt_id, question_id)
+     DO UPDATE SET given_answer = EXCLUDED.given_answer, saved_at = NOW()`,
+    [attemptId, questionIds, givenAnswers]
+  );
 }
 
 // submits an attempt and calculates the score (#9, #10)
@@ -82,15 +90,15 @@ async function submitAttempt(attemptId, finalAnswers, submitType) {
     const result = evaluateAttempt(questions, answerMap, Number(attempt.pass_percentage));
 
     // store correct/wrong for every question (unanswered ones also get a row)
-    for (const r of result.results) {
-      await client.query(
-        `INSERT INTO attempt_answers (attempt_id, question_id, given_answer, is_correct)
-         VALUES ($1, $2, NULL, $3)
-         ON CONFLICT (attempt_id, question_id)
-         DO UPDATE SET is_correct = EXCLUDED.is_correct`,
-        [attempt.id, r.questionId, r.isCorrect]
-      );
-    }
+    // one query for all the questions, same reason as in saveAnswers (#18)
+    await client.query(
+      `INSERT INTO attempt_answers (attempt_id, question_id, given_answer, is_correct)
+       SELECT $1, x.question_id, NULL, x.is_correct
+       FROM unnest($2::int[], $3::boolean[]) AS x(question_id, is_correct)
+       ON CONFLICT (attempt_id, question_id)
+       DO UPDATE SET is_correct = EXCLUDED.is_correct`,
+      [attempt.id, result.results.map((r) => r.questionId), result.results.map((r) => r.isCorrect)]
+    );
 
     const updated = await client.query(
       `UPDATE attempts

@@ -42,6 +42,9 @@ CREATE TABLE IF NOT EXISTS questions (
     marks INT NOT NULL DEFAULT 1 CHECK (marks > 0)
 );
 
+-- questions of a quiz are read on every quiz page, autosave and submit (#18)
+CREATE INDEX IF NOT EXISTS idx_questions_quiz ON questions (quiz_id);
+
 -- one row for every time a student attempts a quiz
 CREATE TABLE IF NOT EXISTS attempts (
     id SERIAL PRIMARY KEY,
@@ -60,6 +63,11 @@ CREATE TABLE IF NOT EXISTS attempts (
 -- a student can have only one running attempt for a quiz at a time
 CREATE UNIQUE INDEX IF NOT EXISTS one_active_attempt
     ON attempts (quiz_id, student_id) WHERE status = 'IN_PROGRESS';
+
+-- so attempts of a student / of a quiz are found without reading the whole table (#18)
+-- used by attempt count on start, quiz list, history, reports and leaderboard
+CREATE INDEX IF NOT EXISTS idx_attempts_quiz_student ON attempts (quiz_id, student_id);
+CREATE INDEX IF NOT EXISTS idx_attempts_student ON attempts (student_id);
 
 -- answers are saved while the student is doing the quiz (autosave)
 -- so nothing is lost if internet goes off in between

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const pool = require('./db');
 
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -12,8 +13,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// prints requests that take more than 1 second, to find the slow parts
+// when a lot of students are using the system together (#18)
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const took = Date.now() - start;
+    if (took > 1000) {
+      console.log('Slow request: ' + req.method + ' ' + req.originalUrl + ' took ' + took + ' ms');
+    }
+  });
+  next();
+});
+
 app.get('/', (req, res) => {
   res.send('Online Quiz System API is running');
+});
+
+// to check if the server and database are fine and how busy the connection pool is (#18)
+// waiting = requests waiting for a free database connection
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({
+      status: 'ok',
+      dbConnections: { total: pool.totalCount, idle: pool.idleCount, waiting: pool.waitingCount }
+    });
+  } catch (err) {
+    res.status(503).json({ status: 'down', message: 'Database is not reachable' });
+  }
 });
 
 app.use('/api/auth', authRoutes);

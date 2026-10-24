@@ -40,9 +40,10 @@ describe('Not logged in', () => {
 });
 
 describe('Quiz management (teacher only)', () => {
-  test('teacher can create quiz', async () => {
+  test('teacher create quiz with no body gives 400', async () => {
+    // real implementation now validates fields and returns 400 when they are missing
     const res = await request(app).post('/api/quizzes').set('Authorization', teacher);
-    expect(res.statusCode).toBe(200);
+    expect(res.statusCode).toBe(400);
   });
 
   test('student cannot create quiz', async () => {
