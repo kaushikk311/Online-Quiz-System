@@ -29,6 +29,14 @@ export default function AttemptQuiz() {
   const answersRef = useRef({});
   const unsavedRef = useRef(false); // true when some answers are not sent to server yet
   const submittedRef = useRef(false);
+  const leftPageRef = useRef(false); // true after the student goes to some other page
+
+  useEffect(() => {
+    leftPageRef.current = false;
+    return () => {
+      leftPageRef.current = true;
+    };
+  }, []);
 
   // load the questions and any answers saved before
   useEffect(() => {
@@ -75,6 +83,21 @@ export default function AttemptQuiz() {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, [quiz]);
+
+  // ask before closing or refreshing the tab while the quiz is not submitted (#9)
+  // the answers are kept, but the timer keeps going on the server
+  useEffect(() => {
+    if (!quiz) return;
+
+    function warnBeforeLeaving(e) {
+      if (!submittedRef.current) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    }
+    window.addEventListener('beforeunload', warnBeforeLeaving);
+    return () => window.removeEventListener('beforeunload', warnBeforeLeaving);
   }, [quiz]);
 
   // autosave every 10 seconds if something changed (#19)
@@ -130,6 +153,8 @@ export default function AttemptQuiz() {
 
   // auto = true when the timer ran out
   // if internet fails we try 3 times. the server ignores duplicate submits so retry is safe (#19)
+  // when time is over we keep trying until it goes through, since the answers cannot be
+  // changed any more. if the server job submits it first, the retry just gets that result (#9)
   async function submitQuiz(auto) {
     if (submittedRef.current) return;
     submittedRef.current = true;
@@ -139,11 +164,16 @@ export default function AttemptQuiz() {
 
     const list = toList(answersRef.current);
 
-    for (let tryNo = 1; tryNo <= 3; tryNo++) {
+    for (let tryNo = 1; auto || tryNo <= 3; tryNo++) {
+      if (leftPageRef.current) return;
       try {
-        await api('/attempts/' + attemptId + '/submit', 'POST', { answers: list, auto });
+        const data = await api('/attempts/' + attemptId + '/submit', 'POST', { answers: list, auto });
         localStorage.removeItem(backupKey);
-        navigate('/result/' + attemptId, { replace: true });
+        // tell the result page if the last answers came too late to be counted
+        navigate('/result/' + attemptId, {
+          replace: true,
+          state: data.lateAnswersIgnored ? { note: data.message } : null
+        });
         return;
       } catch (err) {
         if (err.status && err.status < 500) {
@@ -153,19 +183,18 @@ export default function AttemptQuiz() {
           setSubmitting(false);
           return;
         }
-        // no internet or server busy. wait 2-3 sec, a little random so all the
+        if (auto) {
+          setError('Could not reach the server. Trying again, please stay on this page...');
+        }
+        // no internet or server busy. wait a few sec, a little random so all the
         // students who failed together do not retry at the exact same moment (#18)
-        await wait(2000 + Math.random() * 1000);
+        await wait((tryNo <= 3 ? 2000 : 5000) + Math.random() * 1000);
       }
     }
 
     submittedRef.current = false;
     setSubmitting(false);
-    setError(
-      auto
-        ? 'Time is over but we could not reach the server. Your saved answers will be submitted automatically.'
-        : 'Could not submit because of a network problem. Your answers are kept, please try again.'
-    );
+    setError('Could not submit because of a network problem. Your answers are kept, please try again.');
   }
 
   if (error && !quiz) {
@@ -176,6 +205,17 @@ export default function AttemptQuiz() {
   }
 
   const answeredCount = quiz.questions.filter((q) => answers[q.id]).length;
+
+  // answers cannot be changed while submitting or after the time is over
+  const locked = submitting || timeLeft === 0;
+
+  // question numbers that are still blank, shown before submitting (#9)
+  const unanswered = [];
+  quiz.questions.forEach((q, index) => {
+    if (!answers[q.id]) {
+      unanswered.push('Q' + (index + 1));
+    }
+  });
 
   return (
     <div>
@@ -203,7 +243,7 @@ export default function AttemptQuiz() {
                 type="radio"
                 name={'q_' + q.id}
                 checked={answers[q.id] === opt}
-                disabled={submitting}
+                disabled={locked}
                 onChange={() => handleChange(q.id, opt)}
               />
               {opt}
@@ -216,7 +256,7 @@ export default function AttemptQuiz() {
                 type="radio"
                 name={'q_' + q.id}
                 checked={answers[q.id] === opt}
-                disabled={submitting}
+                disabled={locked}
                 onChange={() => handleChange(q.id, opt)}
               />
               {opt}
@@ -229,7 +269,7 @@ export default function AttemptQuiz() {
               placeholder="Type your answer"
               maxLength={500}
               value={answers[q.id] || ''}
-              disabled={submitting}
+              disabled={locked}
               onChange={(e) => handleChange(q.id, e.target.value)}
             />
           )}
@@ -238,13 +278,16 @@ export default function AttemptQuiz() {
 
       <div className="submit-area">
         {submitting ? (
-          <p>Submitting...</p>
+          <p>{timeLeft === 0 ? 'Time is over. Submitting your answers...' : 'Submitting...'}</p>
         ) : confirming ? (
           <div className="confirm-box">
             <p>
               You answered {answeredCount} of {quiz.questions.length} questions.
               You cannot change answers after submitting. Submit now?
             </p>
+            {unanswered.length > 0 && (
+              <p className="error">Not answered: {unanswered.join(', ')}</p>
+            )}
             <button className="btn" onClick={() => submitQuiz(false)}>Yes, submit</button>
             <button className="btn btn-light" onClick={() => setConfirming(false)}>No, go back</button>
           </div>

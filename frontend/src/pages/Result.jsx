@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -7,6 +7,9 @@ import { useAuth } from '../context/AuthContext.jsx';
 export default function Result() {
   const { attemptId } = useParams();
   const { user } = useAuth();
+  const location = useLocation();
+  // set by the quiz page when the last answers reached the server after the time (#9)
+  const note = location.state && location.state.note;
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
 
@@ -91,6 +94,8 @@ export default function Result() {
           {result.submitType === 'AUTO' ? 'Submitted automatically when time was over' : 'Submitted by you'}
           {' on '}{new Date(result.submittedAt).toLocaleString()}
         </p>
+
+        {note && <p className="error">{note}</p>}
 
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '16px', flexWrap: 'wrap' }}>
           <Link className="btn" to={`/review/${attemptId}`}>

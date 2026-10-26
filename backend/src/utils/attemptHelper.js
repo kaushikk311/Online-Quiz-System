@@ -13,6 +13,23 @@ function isPastGrace(deadline) {
   return Date.now() > deadline.getTime() + GRACE_SECONDS * 1000;
 }
 
+// the browser timer can reach 0 a second or two before the server time does
+const AUTO_SUBMIT_MARGIN_SECONDS = 5;
+
+// decides if a submit is MANUAL or AUTO (#9)
+// askedForAuto is what the browser sent. it is not just believed, otherwise a student
+// could send auto = true early to make it look like the time ran out
+function getSubmitType(askedForAuto, deadline) {
+  const now = Date.now();
+  if (now > deadline.getTime()) {
+    return 'AUTO';
+  }
+  if (askedForAuto && now >= deadline.getTime() - AUTO_SUBMIT_MARGIN_SECONDS * 1000) {
+    return 'AUTO';
+  }
+  return 'MANUAL';
+}
+
 // checks the answers sent from frontend before saving them
 // answers should look like [{ questionId: 1, answer: 'TRUNCATE' }, ...]
 // returns an error message if something is wrong, otherwise null
@@ -64,4 +81,4 @@ function validateAnswers(answers, questions) {
   return null;
 }
 
-module.exports = { GRACE_SECONDS, getDeadline, isPastGrace, validateAnswers };
+module.exports = { GRACE_SECONDS, getDeadline, isPastGrace, getSubmitType, validateAnswers };
