@@ -149,3 +149,5 @@ export default function UsabilityState({
     </section>
   );
 }
+
+// Usability states component for issue #20
