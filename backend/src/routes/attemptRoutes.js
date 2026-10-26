@@ -285,6 +285,7 @@ router.put('/:attemptId/answers', authorize(ROLES.STUDENT), async (req, res) => 
 
 // submit the quiz (#9)
 // body: { answers: [...], auto: true/false }  auto = true when the timer ran out
+// (the server checks auto against its own time, see getSubmitType)
 router.post('/:attemptId/submit', authorize(ROLES.STUDENT), async (req, res) => {
   const attemptId = toId(req.params.attemptId);
   if (!attemptId) {
@@ -293,6 +294,9 @@ router.post('/:attemptId/submit', authorize(ROLES.STUDENT), async (req, res) => 
   const body = req.body || {};
   if (body.answers !== undefined && !Array.isArray(body.answers)) {
     return res.status(400).json({ message: 'Answers should be a list' });
+  }
+  if (body.auto !== undefined && typeof body.auto !== 'boolean') {
+    return res.status(400).json({ message: 'auto should be true or false' });
   }
 
   try {
@@ -306,10 +310,18 @@ router.post('/:attemptId/submit', authorize(ROLES.STUDENT), async (req, res) => 
 
     const done = await submitAttempt(attemptId, body.answers || [], body.auto ? 'AUTO' : 'MANUAL');
 
+    let message = 'Quiz submitted';
+    if (done.alreadySubmitted) {
+      message = 'Quiz was already submitted';
+    } else if (done.lateAnswersIgnored) {
+      message = 'Time was over when the answers reached the server, so only the answers saved before that were counted';
+    }
+
     // send the result back straight away so it can be shown immediately (#11)
     const finished = await findAttempt(attemptId);
     res.json({
-      message: done.alreadySubmitted ? 'Quiz was already submitted' : 'Quiz submitted',
+      message,
+      lateAnswersIgnored: Boolean(done.lateAnswersIgnored),
       result: formatResult(finished)
     });
   } catch (err) {

@@ -1,6 +1,6 @@
 const pool = require('../db');
 const { evaluateAttempt } = require('./evaluate');
-const { getDeadline, isPastGrace, validateAnswers } = require('./attemptHelper');
+const { getDeadline, isPastGrace, getSubmitType, validateAnswers } = require('./attemptHelper');
 
 // saves or updates answers of an attempt (used by autosave and by submit)
 // all answers are saved in one query instead of one query per question, so the
@@ -64,19 +64,22 @@ async function submitAttempt(attemptId, finalAnswers, submitType) {
 
     // answers coming after time is over (+ grace) are ignored,
     // only the answers that were already autosaved will be counted
-    if (finalAnswers && finalAnswers.length > 0 && !isPastGrace(deadline)) {
-      const error = validateAnswers(finalAnswers, questions);
-      if (error) {
-        const err = new Error(error);
-        err.statusCode = 400;
-        throw err;
+    let lateAnswersIgnored = false;
+    if (finalAnswers && finalAnswers.length > 0) {
+      if (isPastGrace(deadline)) {
+        lateAnswersIgnored = true;
+      } else {
+        const error = validateAnswers(finalAnswers, questions);
+        if (error) {
+          const err = new Error(error);
+          err.statusCode = 400;
+          throw err;
+        }
+        await saveAnswers(client, attempt.id, finalAnswers);
       }
-      await saveAnswers(client, attempt.id, finalAnswers);
     }
 
-    if (Date.now() > deadline.getTime()) {
-      submitType = 'AUTO';
-    }
+    submitType = getSubmitType(submitType === 'AUTO', deadline);
 
     const savedRes = await client.query(
       'SELECT question_id, given_answer FROM attempt_answers WHERE attempt_id = $1',
@@ -110,7 +113,7 @@ async function submitAttempt(attemptId, finalAnswers, submitType) {
     );
 
     await client.query('COMMIT');
-    return { attempt: updated.rows[0], alreadySubmitted: false };
+    return { attempt: updated.rows[0], alreadySubmitted: false, lateAnswersIgnored };
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;
