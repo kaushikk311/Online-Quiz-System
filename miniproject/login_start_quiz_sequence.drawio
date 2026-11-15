@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mxfile host="app.diagrams.net" modified="2026-11-15T10:00:00.000Z" agent="ChatGPT" version="24.7.17" type="device">
+  <diagram id="login-quiz-sequence" name="Page-1">
+    <mxGraphModel dx="1100" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Sequence Diagram 1: Login and Start a Quiz" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=18;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="225" y="8" width="400" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1" value="Student Interface&lt;br&gt;(React)" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=11;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="146" y="38" width="94" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2" value="API / Request Handler&lt;br&gt;(Node.js + Express)" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=11;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="263" y="38" width="94" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3" value="Authentication &amp;amp;&lt;br&gt;Role-Based Access" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=11;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="380" y="38" width="94" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4" value="Attempt &amp;amp; Timer&lt;br&gt;Management" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=11;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="497" y="38" width="94" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="p5" value="Local Storage" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;fontSize=11;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="614" y="38" width="94" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor" value="" style="shape=umlActor;html=1;verticalLabelPosition=bottom;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="66" y="42" width="20" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="actorlabel" value="Student" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="48" y="67" width="56" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="life0" value="" style="endArrow=none;startArrow=none;dashed=1;dashPattern=1 3;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="76" y="70" as="sourcePoint"/>
+            <mxPoint x="76" y="790" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="life1" value="" style="endArrow=none;startArrow=none;dashed=1;dashPattern=1 3;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="193" y="70" as="sourcePoint"/>
+            <mxPoint x="193" y="790" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="life2" value="" style="endArrow=none;startArrow=none;dashed=1;dashPattern=1 3;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="70" as="sourcePoint"/>
+            <mxPoint x="310" y="790" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="life3" value="" style="endArrow=none;startArrow=none;dashed=1;dashPattern=1 3;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="427" y="70" as="sourcePoint"/>
+            <mxPoint x="427" y="790" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="life4" value="" style="endArrow=none;startArrow=none;dashed=1;dashPattern=1 3;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="544" y="70" as="sourcePoint"/>
+            <mxPoint x="544" y="790" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="life5" value="" style="endArrow=none;startArrow=none;dashed=1;dashPattern=1 3;strokeWidth=1;strokeColor=#666666;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="661" y="70" as="sourcePoint"/>
+            <mxPoint x="661" y="790" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1" value="1: enter username and password" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="76" y="92" as="sourcePoint"/>
+            <mxPoint x="193" y="92" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m2" value="2: login(username, password)" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="193" y="126" as="sourcePoint"/>
+            <mxPoint x="310" y="126" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m3" value="3: check login details" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="160" as="sourcePoint"/>
+            <mxPoint x="427" y="160" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m4" value="4: read user record" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="427" y="194" as="sourcePoint"/>
+            <mxPoint x="661" y="194" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m5" value="5: user record" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="661" y="228" as="sourcePoint"/>
+            <mxPoint x="427" y="228" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m6" value="6: ok (user, role)" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="427" y="262" as="sourcePoint"/>
+            <mxPoint x="310" y="262" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m7" value="7: signed in, open home page for the role" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="296" as="sourcePoint"/>
+            <mxPoint x="193" y="296" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m8" value="8: click Start on a quiz" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="76" y="330" as="sourcePoint"/>
+            <mxPoint x="193" y="330" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m9" value="9: startAttempt(quizId)" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="193" y="364" as="sourcePoint"/>
+            <mxPoint x="310" y="364" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m10" value="10: authorize(user, quiz attempt)" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="398" as="sourcePoint"/>
+            <mxPoint x="427" y="398" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m11" value="11: allowed" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="427" y="432" as="sourcePoint"/>
+            <mxPoint x="310" y="432" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m12" value="12: start attempt" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="466" as="sourcePoint"/>
+            <mxPoint x="544" y="466" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m13" value="13: read quiz and old attempts" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="544" y="500" as="sourcePoint"/>
+            <mxPoint x="661" y="500" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m14" value="14: quiz, attempts" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="661" y="534" as="sourcePoint"/>
+            <mxPoint x="544" y="534" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m15" value="15: check quiz window and attempts left" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=18;html=1;endArrow=block;endFill=1;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="544" y="560" as="sourcePoint"/>
+            <mxPoint x="544" y="576" as="targetPoint"/>
+            <Array as="points"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m16" value="16: save new attempt (questions, deadline)" style="endArrow=block;endFill=1;html=1;rounded=0;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="544" y="602" as="sourcePoint"/>
+            <mxPoint x="661" y="602" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m17" value="17: attempt with questions" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="544" y="636" as="sourcePoint"/>
+            <mxPoint x="310" y="636" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m18" value="18: attempt data" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="670" as="sourcePoint"/>
+            <mxPoint x="193" y="670" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m19" value="19: show questions and countdown timer" style="endArrow=block;endFill=1;html=1;rounded=0;dashed=1;dashPattern=6 4;strokeWidth=1;strokeColor=#000000;fontSize=10;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="193" y="704" as="sourcePoint"/>
+            <mxPoint x="76" y="704" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note1" value="Wrong username or password: login returns INVALID and the login page shows an error." style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;verticalAlign=middle;spacing=6;fontSize=10;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="30" y="810" width="338" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="note2" value="Quiz not open: NOT_STARTED / ENDED. No attempts left: ATTEMPTS_EXHAUSTED. Student sees the message." style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;verticalAlign=middle;spacing=6;fontSize=10;strokeColor=#000000;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="386" y="810" width="338" height="48" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
